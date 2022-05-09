@@ -203,7 +203,7 @@ codename=$(grep -oP "(?<=^ro.product.vendor.device=).*" -hs "$LOCALDIR/working/v
 [[ -z "${codename}" ]] && codename=Generic
 
 # System tree thing
-outputtreename="trebleExp[$romtypename]-[$codename]-[GSI+SGSI]-[$displayid]-[$sourcever]-[$date-$hashdate]-System-Tree.txt"
+outputtreename="OniiGSI[$romtypename]-[$codename]-[GSI+SGSI]-[$displayid]-[$sourcever]-[$date-$hashdate]-System-Tree.txt"
 outputtree="$outdir/$outputtreename"
 
 if [ ! -f "$outputtree" ]; then
@@ -337,6 +337,17 @@ else
    echo "-> Error: Output image for $outputimagename ($outputtype) doesn't exists!"
    exit 1
 fi
+
+if [[ $(grep "ro.build.display.id" $systemdir/build.prop) ]]; then
+    displayid="ro.build.display.id"
+elif [[ $(grep "ro.system.build.id" $systemdir/build.prop) ]]; then
+    displayid="ro.system.build.id"
+elif [[ $(grep "ro.build.id" $systemdir/build.prop) ]]; then
+    displayid="ro.build.id"
+fi
+displayid2=$(echo "$displayid" | sed 's/\./\\./g')
+bdisplay=$(grep "$displayid" $systemdir/build.prop | sed 's/\./\\./g; s:/:\\/:g; s/\,/\\,/g; s/\ /\\ /g')
+sed -i "s/$bdisplay/$displayid2=Built\.by\.Oniii\.ZualoliconVNGSIs/" $systemdir/build.prop
 
 # Overlays
 if [ -f "$LOCALDIR/output/.tmp" ]; then
