@@ -286,11 +286,11 @@ if [ "$outputtype" == "Aonly" ]; then
 fi
 
 # Out info
-outputname="trebleExp[$romtypename]-[$codename]-[GSI+SGSI]-[$displayid]-[$outputtype]-[$sourcever]-[$date-$hashdate]"
+outputname="OniiGSI[$romtypename]-[$codename]-[GSI+SGSI]-[$displayid]-[$outputtype]-[$sourcever]-[$date-$hashdate]"
 outputimagename="$outputname".img
 outputtextname="$outputname".txt
-outputvendoroverlaysname="trebleExp[$romtypename]-[$codename]-[GSI+SGSI]-[$displayid]-[$sourcever]-[$date-$hashdate]-VendorOverlays.tar.gz"
-outputodmoverlaysname="trebleExp[$romtypename]-[$codename]-[GSI+SGSI]-[$displayid]-[$sourcever]-[$date-$hashdate]-ODMOverlays.tar.gz"
+outputvendoroverlaysname="OniiGSI[$romtypename]-[$codename]-[GSI+SGSI]-[$displayid]-[$sourcever]-[$date-$hashdate]-VendorOverlays.tar.gz"
+outputodmoverlaysname="OniiGSI[$romtypename]-[$codename]-[GSI+SGSI]-[$displayid]-[$sourcever]-[$date-$hashdate]-ODMOverlays.tar.gz"
 output="$outdir/$outputimagename"
 outputvendoroverlays="$outdir/$outputvendoroverlaysname"
 outputodmoverlays="$outdir/$outputodmoverlaysname"
