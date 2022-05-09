@@ -38,7 +38,7 @@ if [ "${EUID}" -ne 0 ]; then
 fi
 
 # Welcome Message
-echo "-> Note: This fork is derived from VeloshGSIs, the predecessor of the old TrebleExperience foundation (2019-2020, VegaGSIs)."
+echo "-> Note: This fork is derived from OniiGSIs, the predecessor of the old Project Onii GSIs foundation (2019-2020, VegaGSIs)."
 echo " - This branch is private, the public repository is available on TrebleExperience's GitHub."
 
 # Util functions
