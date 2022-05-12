@@ -33,7 +33,7 @@ echo "Usage: $0 <Path to GSI system> <Firmware type> <Output type> <Extra VNDK> 
 
 # Need at least 5 args
 if [ "$5" == "" ]; then
-    echo "-> ERROR!"
+    echo "┠─ ERROR!"
     echo " - Enter all needed parameters"
     usage
     exit 1
@@ -41,7 +41,7 @@ fi
 
 # Check output arg
 if [ "$6" == "" ]; then
-    echo "-> Create out dir"
+    echo "┠─ Create out dir"
     outdirname="out"
     outdir="$LOCALDIR/$outdirname"
     mkdir -p "$outdir"
@@ -72,7 +72,7 @@ done
 
 # If flag variable is false, then the ROM isn't even supported.
 if [ "$flag" == "false" ]; then
-    echo "-> Heyaa! $romtype is not a supported ROM! Please review the list of supported ROMs."
+    echo "┠─ Heyaa! $romtype is not a supported ROM! Please review the list of supported ROMs."
     exit 1
 fi
 
@@ -87,7 +87,7 @@ esac
 
 # If flag variable is false, then the layout type isn't even supported.
 if [ "$flag" == "false" ]; then
-    echo "-> Hey, $outputtype is not supported type, supported types:"
+    echo "┠─ Hey, $outputtype is not supported type, supported types:"
     echo " - AB"
     echo " - Aonly"
     exit 1
@@ -100,17 +100,17 @@ if [[ -e "$sourcepath/system" ]]; then
 fi
 
 # GSI process message
-echo "-> Initializing process, creating temporary directory..."
+echo "┠─ Initializing process, creating temporary directory..."
 rm -rf $tempdir
 mkdir -p "$systemdir"
 
 # Check layout type (I guess I'll drop it soon.)
 if [ "$sourcetype" == "Aonly" ]; then
-    echo "-> Warning: Aonly source detected, using P AOSP rootdir"
+    echo "┠─ Warning: Aonly source detected, using P AOSP rootdir"
     cd "$systemdir"
     tar xf "$prebuiltdir/ABrootDir.tar"
     cd "$LOCALDIR"
-    echo "-> Making copy of source rom to temp..."
+    echo "┠─ Making copy of source rom to temp..."
     ( cd "$sourcepath" ; sudo tar cf - . ) | ( cd "$systemdir/system" ; sudo tar xf - ) &> /dev/null
     cd "$LOCALDIR"
     sed -i "/ro.build.system_root_image/d" "$systemdir/system/build.prop"
@@ -119,7 +119,7 @@ if [ "$sourcetype" == "Aonly" ]; then
     echo "ro.build.system_root_image=false" >> "$systemdir/system/build.prop"
     echo "" >> "$systemdir/system/build.prop"
 else
-    echo "-> Making copy of source rom to temp..."
+    echo ┠─ Making copy of source rom to temp..."
     ( cd "$sourcepath" ; sudo tar cf - . ) | ( cd "$systemdir" ; sudo tar xf - ) &> /dev/null
     cd "$LOCALDIR"
     sed -i "/ro.build.system_root_image/d" "$systemdir/system/build.prop"
@@ -133,10 +133,10 @@ fi
 istreble=`cat $systemdir/system/build.prop | grep ro.treble.enabled | cut -d "=" -f 2`
 if [[ ! "$istreble" == "true" ]]; then
     if [ ! -f "$LOCALDIR/working/vendor.img" ]; then
-        echo "-> Hey, the source is not treble supported."
+        echo "┠─ Hey, the source is not treble supported."
         exit 1
     else
-        echo "-> Treble source detected but with disabled treble prop"
+        echo "┠─ Treble source detected but with disabled treble prop"
     fi
 fi
 
@@ -161,30 +161,33 @@ case "$sourcever" in
     *"11"*) flag=true ;;
     *"12"*) flag=true ;;
     *"Sv2"*) flag=true ;;
+    *"13"*) flag=true ;;
+    *"Tiramitsu"*) flag=true ;;
+    *"UpsideDownCake"*) flag=true ;;
 esac
 
 # I need to say something?
 if [ "$flag" == "false" ]; then
-    echo "-> $sourcever is not supported."
+    echo "┠─ $sourcever is not supported."
     exit 1
 fi
 
 # Detect rom folder again
 if [[ ! -d "$romsdir/$sourcever/$romtype" ]]; then
-    echo "-> $romtype is not a supported ROM for Android $sourcever. Please review the list of supported ROMs."
+    echo "┠─ $romtype is not a supported ROM for Android $sourcever. Please review the list of supported ROMs."
     exit 1
 fi
 
 if [ "$sourcetype" == "Aonly" ]; then
     if [[ "$sourcever" == "11" || "$sourcever" == "12" ]]; then
-        echo "-> Building a GSI as system-as-system is not possible in Android R/S, reconsider building with AB ramdisk."
+        echo "┠─ Building a GSI as system-as-system is not possible in Android R/S, reconsider building with AB ramdisk."
         exit 1
     fi
 fi
 
 # Detect arch
 if [[ ! -f "$systemdir/system/lib64/libandroid.so" ]]; then
-    echo "-> A64/ARM32 ROM detected! Can't build due missing A64/ARM32 VNDK/Libraries for it."
+    echo "┠─ A64/ARM32 ROM detected! Can't build due missing A64/ARM32 VNDK/Libraries for it."
     exit 1
 fi
 
@@ -207,37 +210,37 @@ outputtreename="OniiGSI[$romtypename]-[$codename]-[GSI+SGSI]-[$displayid]-[$sour
 outputtree="$outdir/$outputtreename"
 
 if [ ! -f "$outputtree" ]; then
-    echo "-> Generating the system tree..."
+    echo "┠─ Generating the system tree..."
     tree $systemdir >> "$outputtree" 2> "$outputtree"
     echo " - Done!"
 fi
 
 # Check if GApps has been requested
 if [[ $gapps == "false" ]]; then
-    echo "-> Google Apps supply was not requested, ignore."
+    echo "┠─ Google Apps supply was not requested, ignore."
 else
-    echo "-> Google Apps supply was requested, copying into system..."
+    echo "┠─ Google Apps supply was requested, copying into system..."
     $vendordir/google/make.sh "$systemdir/system" "$sourcever" 2>/dev/null
 fi
 
 # Debloat
-echo "-> De-bloating"
+echo "┠─ De-bloating"
 $romsdir/$sourcever/$romtype/debloat.sh "$systemdir/system" 2>/dev/null
 $romsdir/$sourcever/$romtype/$romtypename/debloat.sh "$systemdir/system" 2>/dev/null
 $builddir/debloat/$sourcever/debloat.sh "$systemdir/system" 2>/dev/null # "Common" debloat for 9, 10, 11 & 12 (It's useful for Generic GSI)
 
 # Start patching
-echo "-> Patching started..."
+echo "┠─ Patching started..."
 $scriptsdir/fixsymlinks.sh "$systemdir/system" 2>/dev/null
 $scriptsdir/nukeABstuffs.sh "$systemdir/system" 2>/dev/null
 $builddir/patches/common/make.sh "$systemdir/system" "$romsdir/$sourcever/$romtype" "$sourcever"
 
 # Check if extra VNDK has been requested
 if [[ $novndk == "false" ]]; then
-    echo "-> Extra Vendor Native Development Kit supply was requested, copying into system..."
+    echo "┠─ Extra Vendor Native Development Kit supply was requested, copying into system..."
     $vendordir/vndk/make$sourcever.sh "$systemdir/system" 2>/dev/null
 else
-    echo "-> Extra Vendor Native Development Kit supply not requested, ignore."
+    echo "┠─ Extra Vendor Native Development Kit supply not requested, ignore."
 fi
 
 # Patching moment
@@ -262,7 +265,7 @@ fi
 # Resign to AOSP keys
 if [[ ! -e $romsdir/$sourcever/$romtype/$romtypename/DONTRESIGN ]]; then
     if [[ ! -e $romsdir/$sourcever/$romtype/DONTRESIGN ]]; then
-        echo "-> Resigning to AOSP keys, just wait."
+        echo "┠─ Resigning to AOSP keys, just wait."
         ispython2=`python -c 'import sys; print("%i" % (sys.hexversion<0x03000000))'`
         if [ $ispython2 -eq 0 ]; then
             python2=python2
@@ -277,7 +280,7 @@ fi
 # Fixing environ
 if [ "$outputtype" == "Aonly" ]; then
     if [[ ! $(ls "$systemdir/system/etc/init/" | grep *environ*) ]]; then
-        echo "-> Generating environ.rc"
+        echo "┠─ Generating environ.rc"
         echo "# AUTOGENERATED FILE BY ERFANGSI TOOLS" > "$systemdir/system/etc/init/init.treble-environ.rc"
         echo "on init" >> "$systemdir/system/etc/init/init.treble-environ.rc"
         cat "$systemdir/init.environ.rc" | grep BOOTCLASSPATH >> "$systemdir/system/etc/init/init.treble-environ.rc"
@@ -312,7 +315,7 @@ bytesToHuman() {
 }
 echo "Raw Image Size: $(bytesToHuman $systemsize)" >> "$outputinfo"
 
-echo "-> Creating Image (This may take a while to finish): $outputimagename"
+echo "┠─ Creating Image (This may take a while to finish): $outputimagename"
 
 # Use ext4fs to make image in P or older!
 if [ "$sourcever" == "9" ]; then
@@ -321,20 +324,20 @@ fi
 
 # Build the GSI image
 if [ ! -f "$romsdir/$sourcever/$romtype/build/file_contexts" ]; then
-    echo "-> Note: Custom security contexts not found for this ROM, errors or SELinux problem may appear"
+    echo "┠─ Note: Custom security contexts not found for this ROM, errors or SELinux problem may appear"
     $scriptsdir/mkimage.sh $systemdir $outputtype $systemsize $output false $useold > $tempdir/mkimage.log || rm -rf $output
 else
-    echo "-> Note: Custom security contexts found!"
+    echo "┠─ Note: Custom security contexts found!"
     $scriptsdir/mkimage.sh $systemdir $outputtype $systemsize $output $romsdir/$sourcever/$romtype/build $useold > $tempdir/mkimage.log || rm -rf $output
 fi
 
 # Check if the output image has been built
 if [ -f "$output" ]; then
    # Builded
-   echo "-> Created image ($outputtype): $outputimagename | Size: $(bytesToHuman $systemsize)"
+   echo "┠─ Created image ($outputtype): $outputimagename | Size: $(bytesToHuman $systemsize)"
 else
    # Oops... Error found
-   echo "-> Error: Output image for $outputimagename ($outputtype) doesn't exists!"
+   echo "┠─ Error: Output image for $outputimagename ($outputtype) doesn't exists!"
    exit 1
 fi
 
@@ -364,5 +367,5 @@ if [ -f "$LOCALDIR/output/.otmp" ]; then
     mv "$LOCALDIR/output/.otmp" "$outputodmoverlays"
 fi
 
-echo "-> Done! Delete temporary folder."
+echo "┠─ Done! Delete temporary folder."
 rm -rf "$tempdir"
