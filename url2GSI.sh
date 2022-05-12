@@ -27,19 +27,19 @@ USERNAME=`who | awk '{print $1}'`
 
 # Do an OS check, avoid Darwin as I cannot support it.
 if [ $(uname) == Darwin ]; then
-    echo "-> Darwin is no longer supported."
+    echo "┠─ Darwin is no longer supported."
     exit 1
 fi
 
 # Always run as root
 if [ "${EUID}" -ne 0 ]; then
-    echo "-> Run as root!"
+    echo "┠─ Run as root!"
     exit 1
 fi
 
 # Welcome Message
-echo "-> Note: This fork is derived from OniiGSIs, the predecessor of the old Project Onii GSIs foundation (2019-2020, VegaGSIs)."
-echo " - This branch is private, the public repository is available on TrebleExperience's GitHub."
+echo "╭─⌬ Welcome to OniiGSI-TrebleExperience/ErfanGSIs tool!"
+echo "┠─ Lets Go!!!!!!"
 
 # Util functions
 usage() {
@@ -58,7 +58,7 @@ usage() {
 DOWNLOAD() {
     URL="$1"
     ZIP_NAME="$2"
-    echo "-> Downloading firmware to: $ZIP_NAME"
+    echo "┠─ Downloading firmware to: $ZIP_NAME"
     if echo "${URL}" | grep -q "mega.nz\|mediafire.com\|drive.google.com"; then
         ("${DL}" "${URL}" "$PROJECT_DIR/input" "$ACTUAL_ZIP_NAME") || exit 1
     else
@@ -73,18 +73,18 @@ DOWNLOAD() {
 MOUNT() {
     mkdir -p "$PROJECT_DIR/working/$2"
     if $(sudo mount -o auto -t auto "$PROJECT_DIR/working/$1" "$PROJECT_DIR/working/$2" >/dev/null 2>&1); then
-        echo "-> $3 image successfully mounted"
+        echo "┠─ $3 image successfully mounted"
     elif $(sudo mount -o ro -t erofs "$PROJECT_DIR/working/$1" "$PROJECT_DIR/working/$2" >/dev/null 2>&1); then
-        echo "-> $3 image successfully mounted with Enhanced Read-Only File System"
+        echo "┠─ $3 image successfully mounted with Enhanced Read-Only File System"
     elif $(sudo mount -o loop -t erofs "$PROJECT_DIR/working/$1" "$PROJECT_DIR/working/$2" >/dev/null 2>&1); then
-        echo "-> $3 image successfully mounted with Enhanced Read-Only File System"
+        echo "┠─ $3 image successfully mounted with Enhanced Read-Only File System"
     elif $(sudo mount -o loop "$PROJECT_DIR/working/$1" "$PROJECT_DIR/working/$2" >/dev/null 2>&1); then
-        echo "-> $3 image successfully mounted"
+        echo "┠─ $3 image successfully mounted"
     elif $(sudo mount -o ro "$PROJECT_DIR/working/$1" "$PROJECT_DIR/working/$2" >/dev/null 2>&1); then
-        echo "-> $3 image successfully mounted"
+        echo "┠─ $3 image successfully mounted"
     else
         # If it fails again, abort
-        echo "-> Failed to mount $3 image, try to check this manually, abort."
+        echo "┠─ Failed to mount $3 image, try to check this manually, abort."
         exit 1
     fi
 }
@@ -106,7 +106,7 @@ LEAVE() {
 
 # Need at least 2 args
 if [[ ! -n $2 ]]; then
-    echo "-> ERROR!"
+    echo "┠─ ERROR!"
     echo " - Enter all needed parameters"
     sudo rm -rf "$PROJECT_DIR/cache/" "$LOCK"
     usage
@@ -115,13 +115,13 @@ fi
 
 # GSI Process lock
 if [ -f "$LOCK" ]; then
-    echo "-> Stop, wait for the other job to finish before you can start another one."
+    echo "┠─ Stop, wait for the other job to finish before you can start another one."
     exit 1
 else
     mkdir -p "$PROJECT_DIR/cache/"
     touch "$LOCK"
     if [ ! -d "$1" ]; then
-        echo "-> Warning: Unmounting all partitions inside working folder, deleting all temporary folders/files which are used to do GSI process..."
+        echo "┠─ Warning: Unmounting all partitions inside working folder, deleting all temporary folders/files which are used to do GSI process..."
         UMOUNT_ALL
         sudo rm -rf "$PROJECT_DIR/working/"
     fi
@@ -226,7 +226,7 @@ if [ $MOUNTED == false ]; then
             MOUNT "vendor.img" "vendor" "Vendor"
         fi
     else
-        echo "-> Error, System Image doesn't exists, abort!"
+        echo "┠─ Error, System Image doesn't exists, abort!"
         exit 1
     fi
 fi
@@ -264,4 +264,4 @@ sudo rm -rf "$PROJECT_DIR/cache/" "$PROJECT_DIR/tmp/" "$PROJECT_DIR/working/" "$
 chown -R ${USERNAME}:${USERNAME} $PROJECT_DIR/output
 
 # Done message
-echo " > Done, ${SRCTYPENAME} ROM successfully ported, wait for Bo³+t to finish the process." | sed "s/-/ /g"
+echo "╰─⌬ Done, ${SRCTYPENAME} ROM successfully ported, wait for Bo³+t to finish the process." | sed "s/-/ /g"
