@@ -29,7 +29,7 @@ OPLPARTITIONS="my_bigball my_carrier my_company my_engineering my_heytap my_mani
 MPARTITION="$WORKING/system_new"
 
 usage() {
-   echo "Usage: $0 <Path to firmware>"
+   echo "[ZualoliconVN] => Usage: $0 <Path to firmware>"
    echo -e "\tPath to firmware: the zip!"
 }
 
@@ -45,13 +45,13 @@ MOUNT() {
    elif $(sudo mount -o loop -t erofs "$1" "$2" > /dev/null 2>&1); then
       GOOD=true
    else
-      echo " - Failed to mount $3 image, abort!"
+      echo "[ZualoliconVN] => Failed to mount $3 image, abort!"
       exit 1
    fi
 }
 
 FATAL() {
-   echo " - Error when copying content from an image to the system image, partition that was being copied to the system: $1"
+   echo "[ZualoliconVN] => Error when copying content from an image to the system image, partition that was being copied to the system: $1"
    exit 1
 }
 
@@ -66,14 +66,14 @@ UMOUNT() {
 
 # Always run as root
 if [ "${EUID}" -ne 0 ]; then
-   echo "-> Run as root!"
+   echo "[ZualoliconVN] => Run as root!"
    exit 1
 fi
 
 # Check param
 if [[ ! -n $1 ]]; then
-   echo "-> ERROR!"
-   echo " - Enter all needed parameters"
+   echo "[ZualoliconVN] => ERROR!"
+   echo "[ZualoliconVN] => Enter all needed parameters"
    rm -rf "$WORKING"
    usage
    exit
@@ -91,25 +91,25 @@ if [ ! -d "$WORKING/" ]; then
 fi
 
 # Run!
-echo "-> Running MM Script (2.1)"
-[ ! -f "$FIRMWARE" ] && echo " - Error! Isn't a file. Abort." && exit 1
+echo "[ZualoliconVN] => Running MM Script (2.1)"
+[ ! -f "$FIRMWARE" ] && echo "[ZualoliconVN] => Error! Isn't a file. Abort." && exit 1
 bash "$PROJECT_DIR/../zip2img.sh" "$FIRMWARE" "$WORKING" || exit 1
 
 # Check if there's a partition to merge.
 for partition in $SPARTITIONS $GPARTITIONS $OPLPARTITIONS; do
    [ $partition == system ] && continue
-   [ -f $WORKING/$partition.img ] && DYNAMIC=true && echo "- Detected a partiton which can be merged into system: $partition" >> "$TMPDIR/$TAG" 2>&1
+   [ -f $WORKING/$partition.img ] && DYNAMIC=true && echo "[ZualoliconVN] => Detected a partiton which can be merged into system: $partition" >> "$TMPDIR/$TAG" 2>&1
 done
 
 if [ $DYNAMIC == false ]; then
-   echo " - That firmware seems not dynamic. Abort."
+   echo "[ZualoliconVN] => That firmware seems not dynamic. Abort."
    exit 1
 fi
 
 # Mount all images (but before, fix size)
 for partition in $SPARTITIONS $GPARTITIONS $OPARTITIONS $OPLPARTITIONS $MPARTITION; do
    if [ -f "$WORKING/$partition.img" ]; then
-      echo "- Fixing partition size, resizing & mounting: $partition" >> "$TMPDIR/$TAG" 2>&1
+      echo "[ZualoliconVN] => Fixing partition size, resizing & mounting: $partition" >> "$TMPDIR/$TAG" 2>&1
       [ ! -d "$WORKING/$partition" ] && mkdir -p "$WORKING/$partition"
       e2fsck -fy "$WORKING/$partition.img" >> "$TMPDIR/$TAG" 2>&1
       resize2fs -M "$WORKING/$partition.img" >> "$TMPDIR/$TAG" 2>&1
@@ -122,7 +122,7 @@ for partition in $OPARTITIONS; do
    [ $partition == vendor ] && name=".tmp"
    [ $partition == odm ] && name=".otmp"
    if [ -d $WORKING/$partition/overlay ]; then
-      echo "- Detected ($partition) overlay partition, it's prefix: $name" >> "$TMPDIR/$TAG" 2>&1
+      echo "[ZualoliconVN] => Detected ($partition) overlay partition, it's prefix: $name" >> "$TMPDIR/$TAG" 2>&1
       mkdir -p "$WORKING/${partition}Overlays"
       cp -frp $WORKING/$partition/overlay/* "$WORKING/${partition}Overlays"
       rm -rf "$WORKING/${partition}Overlays/home"
@@ -158,7 +158,7 @@ fi
 for partition in $SPARTITIONS; do
    [ $partition == system ] && continue
    if [ -f "$WORKING/$partition.img" ]; then
-      echo "- Merging $partition into /system/$partition" >> "$TMPDIR/$TAG" 2>&1
+      echo "[ZualoliconVN] => Merging $partition into /system/$partition" >> "$TMPDIR/$TAG" 2>&1
       rm -rf $MPARTITION/$partition $MPARTITION/system/$partition && mkdir -p $MPARTITION/system/$partition
       cp -vfrp $WORKING/$partition/* $MPARTITION/system/$partition >> "$TMPDIR/$TAG" 2>&1 || FATAL "$partition"
       ln -s /system/$partition/ $MPARTITION/$partition
@@ -172,7 +172,7 @@ done
 # GPARTITIONS = (Pixel partitions)
 for partition in $GPARTITIONS; do
    if [ -f "$WORKING/$partition.img" ]; then
-      echo "- Merging $partition into /" >> "$TMPDIR/$TAG" 2>&1
+      echo "[ZualoliconVN] => Merging $partition into /" >> "$TMPDIR/$TAG" 2>&1
       cp -vfrp $WORKING/$partition/* $MPARTITION >> "$TMPDIR/$TAG" 2>&1 || FATAL "$partition"
       umount -l $WORKING/$partition && rm -rf $WORKING/$partition $WORKING/$partition.img
       # TODO(b/1): Drop useless system-other-odex-marker rootfs file
@@ -183,7 +183,7 @@ done
 # ONPPARTITIONS = (OnePlus partitions/stuff)
 for partition in $ONPPARTITIONS; do
    if [ -f "$WORKING/$partition.img" ]; then
-      echo "- Merging $partition into /system/$partition" >> "$TMPDIR/$TAG" 2>&1
+      echo "[ZualoliconVN] => Merging $partition into /system/$partition" >> "$TMPDIR/$TAG" 2>&1
       cp -vfrp $WORKING/$partition/* $MPARTITION/system/$partition >> "$TMPDIR/$TAG" 2>&1 || FATAL "$partition"
       umount -l $WORKING/$partition
       rm -rf $WORKING/$partition
@@ -193,7 +193,7 @@ done
 # OPLPARTITIONS = (Oplus partitions/stuff)
 for partition in $OPLPARTITIONS; do
    if [ -f "$WORKING/$partition.img" ]; then
-      echo "- Merging $partition into /$partition" >> "$TMPDIR/$TAG" 2>&1
+      echo "[ZualoliconVN] => Merging $partition into /$partition" >> "$TMPDIR/$TAG" 2>&1
       cp -vfrp $WORKING/$partition/* $MPARTITION/$partition >> "$TMPDIR/$TAG" 2>&1 || FATAL "$partition"
       umount -l $WORKING/$partition && rm -rf $WORKING/$partition $WORKING/$partition.img
    fi
