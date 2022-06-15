@@ -107,7 +107,7 @@ LEAVE() {
 # Need at least 2 args
 if [[ ! -n $2 ]]; then
     echo "[ZualoliconVN] => ERROR!"
-    echo " - Enter all needed parameters"
+    echo "[ZualoliconVN] => Enter all needed parameters"
     sudo rm -rf "$PROJECT_DIR/cache/" "$LOCK"
     usage
     exit
@@ -264,4 +264,4 @@ sudo rm -rf "$PROJECT_DIR/cache/" "$PROJECT_DIR/tmp/" "$PROJECT_DIR/working/" "$
 chown -R ${USERNAME}:${USERNAME} $PROJECT_DIR/output
 
 # Done message
-echo "[ZualoliconVN] => Done! ${SRCTYPENAME} GSI ported by Onii!" | sed "s/-/ /g"
+echo "[ZualoliconVN] => Done! Gaming ROM GSI ported by Onii!" | sed "s/-/ /g"
