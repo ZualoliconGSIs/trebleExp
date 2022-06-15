@@ -65,11 +65,11 @@ fi
 
 # If the ROM supports getting vendor properties, we will get them.
 if [ -f $romdir/SUPPORTSVENDORPROPS ]; then
-    echo "-> Getting props from the vendor is allowed in this rom, trying to get them..."
+    echo "[ZualoliconVN] => Get props from the vendor is allowed,trying to get them..."
     if [ -d $thispath/../../../working/vendor ]; then
         bash $thispath/getVendorProps.sh $thispath/../../../working/vendor $1 || true
     else
-        echo " - Failed because the vendor seems unmounted."
+        echo "[ZualoliconVN] => Failed because the vendor seems unmounted."
     fi
 fi
 
@@ -208,7 +208,7 @@ fi
 
 # Fix FP touch issues for some meme devices
 if [ -f $romdir/DONTPATCHFP ]; then
-      echo "-> Patching Fingerprint touch is not supported in this ROM. Skipping..."
+      echo "[ZualoliconVN] => Patching Fingerprint touch not supported!Skipping..."
 else
       rm -rf $1/usr/keylayout/uinput-fpc.kl
       rm -rf $1/usr/keylayout/uinput-goodix.kl
