@@ -34,7 +34,7 @@ echo "Usage: $0 <Path to GSI system> <Firmware type> <Output type> <Extra VNDK> 
 # Need at least 5 args
 if [ "$5" == "" ]; then
     echo "[ZualoliconVN] => ERROR!"
-    echo " - Enter all needed parameters"
+    echo "[ZualoliconVN] => Enter all needed parameters"
     usage
     exit 1
 fi
@@ -100,7 +100,7 @@ if [[ -e "$sourcepath/system" ]]; then
 fi
 
 # GSI process message
-echo "[ZualoliconVN] => Initializing process, creating temporary directory..."
+echo "[ZualoliconVN] => Creating temporary directory..."
 rm -rf $tempdir
 mkdir -p "$systemdir"
 
@@ -206,20 +206,20 @@ codename=$(grep -oP "(?<=^ro.product.vendor.device=).*" -hs "$LOCALDIR/working/v
 [[ -z "${codename}" ]] && codename=Generic
 
 # System tree thing
-outputtreename="OniiGSI[$romtypename]-[$codename]-[GSI+SGSI]-[$displayid]-[$sourcever]-[$date-$hashdate]-System-Tree.txt"
+outputtreename="ZualoliconGSIs[$romtypename]-[$codename]-[GSI+SGSI]-[$displayid]-[$sourcever]-[$date-$hashdate]-System-Tree.txt"
 outputtree="$outdir/$outputtreename"
 
 if [ ! -f "$outputtree" ]; then
     echo "[ZualoliconVN] => Generating the system tree..."
     tree $systemdir >> "$outputtree" 2> "$outputtree"
-    echo " - Done!"
+    echo "[ZualoliconVN] => Done!"
 fi
 
 # Check if GApps has been requested
 if [[ $gapps == "false" ]]; then
-    echo "[ZualoliconVN] => Google Apps supply was not requested, ignore."
+    echo "[ZualoliconVN] => GApps supply was not requested,ignore."
 else
-    echo "[ZualoliconVN] Google Apps supply was requested, copying into system..."
+    echo "[ZualoliconVN] => GApps supply was requested, copying..."
     $vendordir/google/make.sh "$systemdir/system" "$sourcever" 2>/dev/null
 fi
 
@@ -237,7 +237,7 @@ $builddir/patches/common/make.sh "$systemdir/system" "$romsdir/$sourcever/$romty
 
 # Check if extra VNDK has been requested
 if [[ $novndk == "false" ]]; then
-    echo "[ZualoliconVN] => Extra Vendor Native Development Kit supply was requested, copying into system..."
+    echo "[ZualoliconVN] => Extra Vendor Native Development Kit supply was requested, copying..."
     $vendordir/vndk/make$sourcever.sh "$systemdir/system" 2>/dev/null
 else
     echo "[ZualoliconVN] => Extra Vendor Native Development Kit supply not requested, ignore."
@@ -265,7 +265,7 @@ fi
 # Resign to AOSP keys
 if [[ ! -e $romsdir/$sourcever/$romtype/$romtypename/DONTRESIGN ]]; then
     if [[ ! -e $romsdir/$sourcever/$romtype/DONTRESIGN ]]; then
-        echo "[ZualoliconVN] => Resigning to AOSP keys, just wait."
+        echo "[ZualoliconVN] => Resigning to AOSP keys..."
         ispython2=`python -c 'import sys; print("%i" % (sys.hexversion<0x03000000))'`
         if [ $ispython2 -eq 0 ]; then
             python2=python2
@@ -315,7 +315,7 @@ bytesToHuman() {
 }
 echo "Raw Image Size: $(bytesToHuman $systemsize)" >> "$outputinfo"
 
-echo "[ZualoliconVN] => Creating .img $outputimagename"
+echo "[ZualoliconVN] => Creating system.img"
 
 # Use ext4fs to make image in P or older!
 if [ "$sourcever" == "9" ]; then
@@ -324,7 +324,7 @@ fi
 
 # Build the GSI image
 if [ ! -f "$romsdir/$sourcever/$romtype/build/file_contexts" ]; then
-    echo "[ZualoliconVN] => Note: Custom security contexts not found for this ROM, errors or SELinux problem may appear"
+    echo "[ZualoliconVN] => Note: Custom security contexts not found!"
     $scriptsdir/mkimage.sh $systemdir $outputtype $systemsize $output false $useold > $tempdir/mkimage.log || rm -rf $output
 else
     echo "[ZualoliconVN] => Note: Custom security contexts found!"
@@ -337,7 +337,7 @@ if [ -f "$output" ]; then
    echo "[ZualoliconVN] => Created image ($outputtype): $outputimagename | Size: $(bytesToHuman $systemsize)"
 else
    # Oops... Error found
-   echo "[ZualoliconVN] => Error: Output image for $outputimagename ($outputtype) doesn't exists!"
+   echo "[ZualoliconVN] => Error: Output image doesn't exists!"
    exit 1
 fi
 
