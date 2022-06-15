@@ -334,7 +334,7 @@ fi
 # Check if the output image has been built
 if [ -f "$output" ]; then
    # Builded
-   echo "[ZualoliconVN] => Created image ($outputtype): $outputimagename | Size: $(bytesToHuman $systemsize)"
+   echo "[ZualoliconVN] => Created image GamingROM.img | Size: $(bytesToHuman $systemsize)"
 else
    # Oops... Error found
    echo "[ZualoliconVN] => Error: Output image doesn't exists!"
