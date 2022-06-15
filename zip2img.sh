@@ -94,7 +94,7 @@ cd $tmpdir
 
 MAGIC=$(head -c12 "$romzip" | tr -d '\0')
 if [[ $MAGIC == "OPPOENCRYPT!" ]] || [[ "$romzipext" == "ozip" ]]; then
-    echo "-> ozip detected"
+    echo "[ZualoliconVN] => ozip detected"
     cp "$romzip" "$tmpdir/temp.ozip"
     python3 $ozipdecrypt "$tmpdir/temp.ozip" >> $tmpdir/ozip.log 2>&1
     if [[ -d "$tmpdir/out" ]]; then
@@ -134,7 +134,7 @@ if [[ $(echo "$romzip" | grep -i ruu_ | grep -i exe) ]]; then
 fi
 
 if [[ ! $(7z l -ba "$romzip" | grep ".*system.ext4.tar.*\|.*.tar\|.*chunk\|system\/build.prop\|system.new.dat\|system_new.img\|system.img\|system-sign.img\|system.bin\|payload.bin\|.*.zip\|.*.rar\|.*rawprogram*\|system.sin\|.*system_.*\.sin\|system-p\|super\|UPDATE.APP\|.*.pac\|.*.nb0" | grep -v ".*chunk.*\.so$") ]]; then
-    echo "-> BRUH: This type of firmwares not supported"
+    echo "ZualoliconVN => BRUH: This type of firmwares not supported"
     cd "$LOCALDIR"
     rm -rf "$tmpdir" "$outdir"
     exit 1
@@ -146,7 +146,7 @@ for otherpartition in $OTHERPARTITIONS; do
     filename=$(echo $otherpartition | cut -f 1 -d ":")
     outname=$(echo $otherpartition | cut -f 2 -d ":")
     if [[ $(7z l -ba "$romzip" | grep $filename) ]]; then
-        echo "-> $filename detected for $outname"
+        echo "[ZualoliconVN] => $filename detected for $outname"
         foundfiles=$(7z l -ba "$romzip" | gawk '{ print $NF }' | grep $filename)
         7z e -y "$romzip" $foundfiles 2>/dev/null >> $tmpdir/zip.log
         outputs=$(ls *"$filename"*)
