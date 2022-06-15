@@ -27,19 +27,19 @@ USERNAME=`who | awk '{print $1}'`
 
 # Do an OS check, avoid Darwin as I cannot support it.
 if [ $(uname) == Darwin ]; then
-    echo "┠─[Mirai] Darwin is no longer supported."
+    echo "[ZualoliconVN] => Darwin is no longer supported."
     exit 1
 fi
 
 # Always run as root
 if [ "${EUID}" -ne 0 ]; then
-    echo "┠─Run as root!"
+    echo "[ZualoliconVN] => Run as root!"
     exit 1
 fi
 
 # Welcome Message
-echo "╭─⌬ Welcome to OniiGSIs-TrebleExperience/ErfanGSIs tool!"
-echo "┠─[Mirai] Lets Go!!!!!!"
+echo "Welcome to TrebleExperience/ErfanGSIs tool!"
+echo "Lets Go!!!!!!"
 
 # Util functions
 usage() {
@@ -58,7 +58,7 @@ usage() {
 DOWNLOAD() {
     URL="$1"
     ZIP_NAME="$2"
-    echo "┠─[Mirai] Downloading firmware"
+    echo "[ZualoliconVN] => Downloading firmware"
     if echo "${URL}" | grep -q "mega.nz\|mediafire.com\|drive.google.com"; then
         ("${DL}" "${URL}" "$PROJECT_DIR/input" "$ACTUAL_ZIP_NAME") || exit 1
     else
@@ -73,18 +73,18 @@ DOWNLOAD() {
 MOUNT() {
     mkdir -p "$PROJECT_DIR/working/$2"
     if $(sudo mount -o auto -t auto "$PROJECT_DIR/working/$1" "$PROJECT_DIR/working/$2" >/dev/null 2>&1); then
-        echo "┠─[Mirai] $3 image successfully mounted"
+        echo "[ZualoliconVN] => $3 image successfully mounted"
     elif $(sudo mount -o ro -t erofs "$PROJECT_DIR/working/$1" "$PROJECT_DIR/working/$2" >/dev/null 2>&1); then
-        echo "┠─[Mirai] $3 image successfully mounted with Enhanced Read-Only File System"
+        echo "[ZualoliconVN] => $3 image successfully mounted with Enhanced Read-Only File System"
     elif $(sudo mount -o loop -t erofs "$PROJECT_DIR/working/$1" "$PROJECT_DIR/working/$2" >/dev/null 2>&1); then
-        echo "┠─[Mirai] $3 image successfully mounted with Enhanced Read-Only File System"
+        echo "[ZualoliconVN] => $3 image successfully mounted with Enhanced Read-Only File System"
     elif $(sudo mount -o loop "$PROJECT_DIR/working/$1" "$PROJECT_DIR/working/$2" >/dev/null 2>&1); then
-        echo "┠─[Mirai] $3 image successfully mounted"
+        echo "[ZualoliconVN] => $3 image successfully mounted"
     elif $(sudo mount -o ro "$PROJECT_DIR/working/$1" "$PROJECT_DIR/working/$2" >/dev/null 2>&1); then
-        echo "┠─[Mirai] $3 image successfully mounted"
+        echo "[ZualoliconVN] => $3 image successfully mounted"
     else
         # If it fails again, abort
-        echo "┠─[Mirai] Failed to mount $3 image."
+        echo "[ZualoliconVN] => Failed to mount $3 image."
         exit 1
     fi
 }
@@ -106,7 +106,7 @@ LEAVE() {
 
 # Need at least 2 args
 if [[ ! -n $2 ]]; then
-    echo "┠─[Mirai] ERROR!"
+    echo "[ZualoliconVN] => ERROR!"
     echo " - Enter all needed parameters"
     sudo rm -rf "$PROJECT_DIR/cache/" "$LOCK"
     usage
@@ -115,20 +115,20 @@ fi
 
 # GSI Process lock
 if [ -f "$LOCK" ]; then
-    echo "┠─[Mirai] Stop, wait for the other job to finish before make more."
+    echo "[ZualoliconVN] => Stop, wait for the other job to finish before make more."
     exit 1
 else
     mkdir -p "$PROJECT_DIR/cache/"
     touch "$LOCK"
     if [ ! -d "$1" ]; then
-        echo "┠─[Mirai] Unmounting..."
+        echo "[ZualoliconVN] => Unmounting..."
         UMOUNT_ALL
         sudo rm -rf "$PROJECT_DIR/working/"
     fi
     sudo rm -rf "$PROJECT_DIR/output/" "$PROJECT_DIR/cache/" "$PROJECT_DIR/tmp/"  "$PROJECT_DIR/tools/ROM_resigner/tmp/"
     sudo find . -type d -name "__pycache__" -exec rm -rf {} +
     sudo find . -type f -name "*.pyc" -exec rm -rf {} +
-    echo " ➡️[Mirai] Done."
+    echo "[ZualoliconVN] => Done."
 fi
 
 # Get the args
@@ -226,7 +226,7 @@ if [ $MOUNTED == false ]; then
             MOUNT "vendor.img" "vendor" "Vendor"
         fi
     else
-        echo "┠─[Mirai] Error, System Image doesn't exists, abort!"
+        echo "[ZualoliconVN] => Error, System Image doesn't exists, abort!"
         exit 1
     fi
 fi
@@ -235,7 +235,7 @@ if [ "$MERGE" == false ]; then
     for partition in $PARTITIONS; do
         if [ -f "$PROJECT_DIR/working/$partition.img" ]; then
             # If exists, then the merge usage is needed!
-            echo " - Oops... Seems you forgot to enable merger argument (-m), there are existing partition(s) that need to be merged into the system partition. Abort."
+            echo "[ZualoliconVN] => Bruh!!! This firmware dynamic.Pls add (-m) to merge"
             exit 1
         fi
     done
@@ -264,4 +264,4 @@ sudo rm -rf "$PROJECT_DIR/cache/" "$PROJECT_DIR/tmp/" "$PROJECT_DIR/working/" "$
 chown -R ${USERNAME}:${USERNAME} $PROJECT_DIR/output
 
 # Done message
-echo "╰─⌬ Done, ${SRCTYPENAME} ROM successfully ported!" | sed "s/-/ /g"
+echo "[ZualoliconVN] => Done! ${SRCTYPENAME} GSI ported by Onii!" | sed "s/-/ /g"
