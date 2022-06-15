@@ -309,7 +309,7 @@ elif [[ $(7z l -ba "$romzip" | grep "system-sign.img") ]]; then
     done
     romzip=""
 elif [[ $(7z l -ba "$romzip" | grep "super.img") ]]; then
-    echo "[ZualoliconVN] SuperIdol detected"
+    echo "[ZualoliconVN] => SuperIdol detected"
     foundsupers=$(7z l -ba "$romzip" | gawk '{ print $NF }' | grep "super.img")
     7z e -y "$romzip" $foundsupers dummypartition 2>/dev/null >> $tmpdir/zip.log
     superchunk=$(ls | grep chunk | grep super | sort)
