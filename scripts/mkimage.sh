@@ -5,7 +5,7 @@
 
 usage()
 {
-    echo "Usage: $0 <Path to GSI system> <Output Type> <System Partition Size> <Output File> [--old]"
+    echo "[ZualoliconVN] => Usage: $0 <Path to GSI system> <Output Type> <System Partition Size> <Output File> [--old]"
     echo -e "\tPath to GSI system : Mount GSI and set mount point"
     echo -e "\tOutput type : AB or A-Only"
     echo -e "\tSystem Partition Size : set system Partition Size"
@@ -14,8 +14,8 @@ usage()
 }
 
 if [ "$4" == "" ]; then
-    echo "-> ERROR!"
-    echo " - Enter all needed parameters."
+    echo "[ZualoliconVN] => ERROR!"
+    echo "[ZualoliconVN] => Enter all needed parameters."
     usage
     exit 1
 fi
@@ -32,7 +32,7 @@ toolsdir="$LOCALDIR/../tools"
 HOST="$(uname)"
 make_ext4fs="$toolsdir/$HOST/bin/make_ext4fs"
 
-echo "-> Prepare: File Contexts"
+echo "[ZualoliconVN] => Prepare: File Contexts"
 p="/plat_file_contexts"
 n="/nonplat_file_contexts"
 for f in "$systemdir/system/etc/selinux" "$systemdir/system/vendor/etc/selinux"; do
