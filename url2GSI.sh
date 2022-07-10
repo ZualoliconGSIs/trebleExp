@@ -38,8 +38,8 @@ if [ "${EUID}" -ne 0 ]; then
 fi
 
 # Welcome Message
-echo "Welcome to TrebleExperience/ErfanGSIs tool!"
-echo "Lets Go!!!!!!"
+echo "[ZualoliconVN] => Preparing tool"
+echo "[ZualoliconVN] => Updating..."
 
 # Util functions
 usage() {
