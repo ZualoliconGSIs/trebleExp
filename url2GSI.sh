@@ -6,11 +6,11 @@
 # Core variables, do not edit.
 PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 AB=true
-AONLY=true
+AONLY=false
 MOUNTED=false
 NOVNDK=false
 GAPPS=false
-CLEAN=false
+CLEAN=true
 MERGE=false
 
 # Check for partitions to validate if the merger usage is needed
@@ -43,7 +43,7 @@ echo "[ZualoliconVN] => Updating..."
 
 # Util functions
 usage() {
-    echo "Usage: [--help|-h|-?] [--ab|-b] [--aonly|-a] [--cleanup|-c] [--merge|-m] [--no-vndks|-nv] [--gapps|-g] $0 <Firmware link> <Firmware type> [Other args]"
+    echo "Usage: [--help|-h|-?] [--ab|-b] [--aonly|-a] [--cleanup|-c] [--merge|-d] [--no-vndks|-nv] [--gapps|-g] $0 <Firmware link> <Firmware type> [Other args]"
     echo -e "\tFirmware link: Firmware download link or local path"
     echo -e "\tFirmware type: Firmware mode"
     echo -e "\t--ab: Build only AB"
