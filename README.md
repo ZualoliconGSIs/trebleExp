@@ -17,7 +17,7 @@ Telegram channel: https://t.me/TrebleExperience
 ### How to clone & use
 * I recommend that you know the basics of Linux and Git.
 ```
-git clone --recurse-submodules https://github.com/TrebleExperience/ErfanGSIs-TrebleExperience.git ErfanGSIs -b velan/stable && cd ErfanGSIs; sudo bash setup.sh
+git clone --recurse-submodules https://github.com/ZualoliconGSIs/trebleExp.git ErfanGSIs -b velan/stable && cd ErfanGSIs; sudo bash setup.sh
 ```
 
 ### A simple usage
