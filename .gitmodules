@@ -1,12 +1,6 @@
-[submodule "vendor/vndk"]
-	path = vendor/vndk
-	url = 
 [submodule "tools/ROM_resigner"]
 	path = tools/ROM_resigner
 	url = https://github.com/erfanoabdi/ROM_resigner.git
 [submodule "tools/oppo_ozip_decrypt"]
 	path = tools/oppo_ozip_decrypt
 	url = https://github.com/bkerler/oppo_ozip_decrypt.git
-[submodule "vendor/google"]
-	path = vendor/google
-	url = https://github.com/TrebleExperience/vendor_google_apps.git
