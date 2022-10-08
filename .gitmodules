@@ -1,6 +1,6 @@
 [submodule "vendor/vndk"]
 	path = vendor/vndk
-	url = https://github.com/OniiGSIs/vendor_vndk.git
+	url = 
 [submodule "tools/ROM_resigner"]
 	path = tools/ROM_resigner
 	url = https://github.com/erfanoabdi/ROM_resigner.git
